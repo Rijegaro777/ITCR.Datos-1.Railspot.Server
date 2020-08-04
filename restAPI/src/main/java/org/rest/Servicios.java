@@ -4,7 +4,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 
-@Path("servicios")
+@ApplicationPath("servicios")
 public class Servicios extends Application {
     @GET
     @Path("cedula")
