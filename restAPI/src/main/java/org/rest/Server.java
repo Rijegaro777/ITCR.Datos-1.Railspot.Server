@@ -3,7 +3,6 @@ package org.rest;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-
 import java.net.URI;
 
 public class Server {
@@ -18,6 +17,7 @@ public class Server {
     public static HttpServer get_instance(){
         if (instance == null) {
             instance = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+
         }
         return instance;
     }
