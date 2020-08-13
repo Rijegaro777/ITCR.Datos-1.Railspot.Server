@@ -4,6 +4,7 @@ public class AristaGrafo {
 	  private int fromNodeIndex;
 	  private int toNodeIndex;
 	  private int length;
+
 	  public AristaGrafo(int fromNodeIndex, int toNodeIndex, int length) {
 	    this.fromNodeIndex = fromNodeIndex;
 	    this.toNodeIndex = toNodeIndex;
@@ -12,13 +13,15 @@ public class AristaGrafo {
 	  public int getFromNodeIndex() {
 	    return fromNodeIndex;
 	  }
+
 	  public int getToNodeIndex() {
 	    return toNodeIndex;
 	  }
+
 	  public int getLength() {
 	    return length;
 	  }
-	  // determines the neighbouring node of a supplied node, based on the two nodes connected by this edge
+
 	  public int getNeighbourIndex(int nodeIndex) {
 	    if (this.fromNodeIndex == nodeIndex) {
 	      return this.toNodeIndex;

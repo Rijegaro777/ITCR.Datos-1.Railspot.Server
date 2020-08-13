@@ -198,12 +198,4 @@ public class BST<T extends Comparable<T>> {
      * @return Retorna la raiz del arbol.
      */
     public NodoArbol<T> get_root(){return this.root;}
-
-    public void print_in_orden(NodoArbol<T> nodo){
-        if (nodo != null){
-            print_in_orden(nodo.get_left());
-            System.out.println(nodo.get_key());
-            print_in_orden(nodo.get_right());
-        }
-    }
 }

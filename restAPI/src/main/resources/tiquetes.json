@@ -1,0 +1,23 @@
+[
+  {
+    "id": 0,
+    "comprador": 208170157,
+    "partida": 5,
+    "destino": 11,
+    "fecha": "20/8/2020"
+  },
+  {
+    "id": 1,
+    "comprador": 115464472,
+    "partida": 9,
+    "destino": 7,
+    "fecha": "21/8/2020"
+  },
+  {
+    "id": 2,
+    "comprador": 115464472,
+    "partida": 7,
+    "destino": 9,
+    "fecha": "21/8/2020"
+  }
+]
