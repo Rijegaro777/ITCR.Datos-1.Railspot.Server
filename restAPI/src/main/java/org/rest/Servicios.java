@@ -51,6 +51,30 @@ public class Servicios extends Application {
     }
 
     /**
+     * Recibe una solicitud para calcular el costo en distancia y dinero entre dos puntos.
+     * @param partida_destino Un string compuesto por el índice del nodo de partida y
+     *                        el nodo destino, separados por un "%".
+     * @return Un string compuesto por la distancia más corta entre los puntos de
+     *         llegada y partida y el precio del viaje, separados por un "%".
+     */
+    @GET
+    @Path("calcular_costo/{partida_destino}")
+    @Produces("text/plain")
+    public Response calcular_costo(@PathParam("partida_destino") String partida_destino){
+        Response response;
+        try{
+            int partida = Integer.parseInt(partida_destino.split("%")[0]);
+            int destino = Integer.parseInt(partida_destino.split("%")[1]);
+            String costo = Controlador.get_instance().calcular_costo(partida, destino);
+            response = Response.ok(costo).build();
+        }
+        catch (Exception e){
+            response = Response.serverError().build();
+        }
+        return response;
+    }
+
+    /**
      * Recibe una solicitud para comprar un tiquete.
      * @param tiquete El JSON del tiquete a comprar.
      * @return Una respuesta "OK" si el resultado es satisfactorio y un error si falla.

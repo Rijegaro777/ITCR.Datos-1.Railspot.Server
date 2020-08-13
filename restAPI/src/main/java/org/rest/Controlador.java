@@ -310,5 +310,20 @@ public class Controlador {
     public String hash_MD5(String string) {
         return DigestUtils.md5Hex(string);
     }
+
+    /**
+     * Calcula el costo en dinero y distancia de un viaje.
+     * @param partida El índice del nodo de partida.
+     * @param destino El índice del nodo de llegada.
+     * @return Un string compuesto por la distancia más corta entre los puntos de
+     * llegada y partida y el precio del viaje, separados por un "%".
+     */
+    public String calcular_costo(int partida, int destino) {
+        rutas.calculateShortestDistances(partida);
+        int distancia = rutas.getNodes()[destino].getDistanceFromSource();
+        int precio = distancia * 25;
+        String result = String.valueOf(distancia) + "%" + String.valueOf(precio);
+        return  result;
+    }
 }
 
