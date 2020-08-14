@@ -1,58 +1,9 @@
 [
   {
     "id": 0,
-    "comprador": 208170157,
-    "partida": 5,
-    "destino": 11,
-    "fecha": "8/20/2020"
-  },
-  {
-    "id": 1,
-    "comprador": 115464472,
+    "comprador": 201230456,
     "partida": 9,
-    "destino": 7,
-    "fecha": "8/21/2020"
-  },
-  {
-    "id": 2,
-    "comprador": 115464472,
-    "partida": 7,
-    "destino": 9,
-    "fecha": "8/21/2020"
-  },
-  {
-    "id": 3,
-    "comprador": 208170157,
-    "partida": 10,
-    "destino": 3,
-    "fecha": "4/9/2020"
-  },
-  {
-    "id": 4,
-    "comprador": 208170157,
-    "partida": 3,
-    "destino": 10,
-    "fecha": "4/9/2020"
-  },
-  {
-    "id": 5,
-    "comprador": 115464472,
-    "partida": 2,
-    "destino": 10,
-    "fecha": "4/9/2020"
-  },
-  {
-    "id": 6,
-    "comprador": 115464472,
-    "partida": 10,
     "destino": 2,
-    "fecha": "4/9/2020"
-  },
-  {
-    "id": 7,
-    "comprador": 208170157,
-    "partida": 2,
-    "destino": 0,
-    "fecha": "7/9/2020"
+    "fecha": "11/12/2020"
   }
 ]

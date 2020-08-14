@@ -16,7 +16,8 @@ import java.util.List;
 
 public class Controlador {
     private int san_jose, san_pedro, zapote, sabanilla, curridabat,
-            tres_rios, cartago, paraiso, guadalupe, moravia, tibas, santo_domingo, heredia;
+            tres_rios, cartago, paraiso, guadalupe, moravia, tibas,
+            santo_domingo, heredia, usuario_actual;
     private String json_usuarios, json_tiquetes;
     private Gson gson;
     private ArrayList<AristaGrafo> aristas;
@@ -71,9 +72,7 @@ public class Controlador {
     }
 
     /**
-     * Valida que exista un usuario con una cédula y verifica si su contraseña corresponde con
-     * el pswrd.
-     *
+     * Valida que exista un usuario con una cédula y verifica si su contraseña corresponde con el pswrd.
      * @param cedula La cédula que se va a buscar en el árbol.
      * @param pswrd  La contraseña que se va a comparar con la del usuario.
      * @return El string de un boolean que indica si la cedula y la contraseña son correctas.
@@ -81,6 +80,7 @@ public class Controlador {
     public String validar_usuario(int cedula, String pswrd) {
         if (arbol_usuarios.contains(cedula)) {
             if (arbol_usuarios.get_nodo(cedula).get_valor().get_pswrd().equals(pswrd)) {
+                usuario_actual = cedula;
                 return String.valueOf(true);
             }
         }
@@ -101,7 +101,7 @@ public class Controlador {
         } else {
             id = arbol_tiquetes.get_max() + 1;
         }
-        Tiquete tiquete_final = new Tiquete(id, tiquete_aux.get_comprador(), tiquete_aux.get_partida(), tiquete_aux.get_destino(), tiquete_aux.get_fecha());
+        Tiquete tiquete_final = new Tiquete(id, usuario_actual, tiquete_aux.get_partida(), tiquete_aux.get_destino(), tiquete_aux.get_fecha());
         arbol_tiquetes.add(tiquete_final, tiquete_final.get_id());
         arbol_usuarios.get_nodo(tiquete_final.get_comprador()).get_valor().get_tiquetes().add(tiquete_final.get_id());
         agregar_tiquete_json_tiquetes(tiquete_final);
