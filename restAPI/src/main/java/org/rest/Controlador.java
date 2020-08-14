@@ -3,6 +3,7 @@ package org.rest;
 import EstructurasDatos.AristaGrafo;
 import EstructurasDatos.BST;
 import EstructurasDatos.Grafo;
+import EstructurasDatos.NodoGrafo;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -45,6 +46,7 @@ public class Controlador {
 
     /**
      * Crea y devuelve una instancia única de Controlador.
+     *
      * @return Una instancia de Controlador.
      */
     public static Controlador get_instance() {
@@ -56,6 +58,7 @@ public class Controlador {
 
     /**
      * Agrega un usuario nuevo al JSON de usuarios.
+     *
      * @param usuario Un string con el JSON del usuario.
      * @throws Exception
      */
@@ -69,13 +72,14 @@ public class Controlador {
     /**
      * Valida que exista un usuario con una cédula y verifica si su contraseña corresponde con
      * el pswrd.
+     *
      * @param cedula La cédula que se va a buscar en el árbol.
-     * @param pswrd La contraseña que se va a comparar con la del usuario.
+     * @param pswrd  La contraseña que se va a comparar con la del usuario.
      * @return El string de un boolean que indica si la cedula y la contraseña son correctas.
      */
     public String validar_usuario(int cedula, String pswrd) {
-        if(arbol_usuarios.contains(cedula)){
-            if(arbol_usuarios.get_nodo(cedula).get_valor().get_pswrd().equals(pswrd)){
+        if (arbol_usuarios.contains(cedula)) {
+            if (arbol_usuarios.get_nodo(cedula).get_valor().get_pswrd().equals(pswrd)) {
                 return String.valueOf(true);
             }
         }
@@ -84,16 +88,16 @@ public class Controlador {
 
     /**
      * Agrega un tiquete al JSON de tiquetes.
+     *
      * @param tiquete Un string con el JSON del tiquete.
      * @throws Exception
      */
     public void comprar_tiquete(String tiquete) throws Exception {
         Tiquete tiquete_aux = gson.fromJson(tiquete, Tiquete.class);
         int id;
-        if(arbol_tiquetes.is_empty()){
+        if (arbol_tiquetes.is_empty()) {
             id = 0;
-        }
-        else{
+        } else {
             id = arbol_tiquetes.get_max() + 1;
         }
         Tiquete tiquete_final = new Tiquete(id, tiquete_aux.get_comprador(), tiquete_aux.get_partida(), tiquete_aux.get_destino(), tiquete_aux.get_fecha());
@@ -105,6 +109,7 @@ public class Controlador {
 
     /**
      * Lee el archivo JSON de los usuarios.
+     *
      * @return Una lista con todos los usuarios del JSON.
      */
     private List<Usuario> get_lista_usuarios_json_usuarios() throws IOException {
@@ -132,6 +137,7 @@ public class Controlador {
 
     /**
      * Lee el archivo JSON de los tiquete.
+     *
      * @return Una lista con todos los tiquetes del JSON.
      */
     private List<Tiquete> get_lista_tiquetes_json_tiquetes() throws IOException {
@@ -159,6 +165,7 @@ public class Controlador {
 
     /**
      * Agrega un Usuario al JSON.
+     *
      * @param usuario El usuario a agregar.
      */
     private void agregar_usuario_json_usuarios(Usuario usuario) throws Exception {
@@ -180,6 +187,7 @@ public class Controlador {
 
     /**
      * Agrega un tiquete al JSON.
+     *
      * @param tiquete El usuario a agregar.
      */
     private void agregar_tiquete_json_tiquetes(Tiquete tiquete) throws Exception {
@@ -201,6 +209,7 @@ public class Controlador {
 
     /**
      * Sobreescribe los datos que ya existen en el JSON de usuarios.
+     *
      * @throws Exception
      */
     private void actualizar_usuarios_json_usuarios() throws Exception {
@@ -218,6 +227,7 @@ public class Controlador {
             fileWriter.close();
         }
     }
+
     /**
      * Carga todos los usuarios que haya en el JSON a un árbol binario de búsqueda.
      */
@@ -261,15 +271,15 @@ public class Controlador {
         this.aristas = new ArrayList<>();
 
         //San José
-        aristas.add(new AristaGrafo(san_jose,san_pedro,5));
-        aristas.add(new AristaGrafo(san_jose,zapote,7));
-        aristas.add(new AristaGrafo(san_jose,sabanilla,8));
-        aristas.add(new AristaGrafo(san_jose,tibas,5));
+        aristas.add(new AristaGrafo(san_jose, san_pedro, 5));
+        aristas.add(new AristaGrafo(san_jose, zapote, 7));
+        aristas.add(new AristaGrafo(san_jose, sabanilla, 8));
+        aristas.add(new AristaGrafo(san_jose, tibas, 5));
 
         //San Pedro
-        aristas.add(new AristaGrafo(san_pedro,guadalupe,4));
-        aristas.add(new AristaGrafo(san_pedro,sabanilla,5));
-        aristas.add(new AristaGrafo(san_pedro,curridabat,3));
+        aristas.add(new AristaGrafo(san_pedro, guadalupe, 4));
+        aristas.add(new AristaGrafo(san_pedro, sabanilla, 5));
+        aristas.add(new AristaGrafo(san_pedro, curridabat, 3));
 
         //Zapote
         aristas.add(new AristaGrafo(zapote, tres_rios, 3));
@@ -304,6 +314,7 @@ public class Controlador {
 
     /**
      * Encripta un string usando el algoritmo hashMD5
+     *
      * @param string El string a encriptar.
      * @return Un string con el string encriptado.
      */
@@ -313,6 +324,7 @@ public class Controlador {
 
     /**
      * Calcula el costo en dinero y distancia de un viaje.
+     *
      * @param partida El índice del nodo de partida.
      * @param destino El índice del nodo de llegada.
      * @return Un string compuesto por la distancia más corta entre los puntos de
@@ -322,8 +334,14 @@ public class Controlador {
         rutas.calculateShortestDistances(partida);
         int distancia = rutas.getNodes()[destino].getDistanceFromSource();
         int precio = distancia * 25;
-        String result = String.valueOf(distancia) + "%" + String.valueOf(precio);
-        return  result;
+        String result = String.valueOf(distancia - partida) + "%" + String.valueOf(precio);
+        return result;
+    }
+
+    public String obtener_compras_usuario(int id_usuario) {
+        List<Integer> tiquetes_comprados_usuario = arbol_usuarios.get_nodo(id_usuario).get_valor().get_tiquetes();
+        String tiquetes_comprados_json = gson.toJson(tiquetes_comprados_usuario);
+        return tiquetes_comprados_json;
     }
 }
 

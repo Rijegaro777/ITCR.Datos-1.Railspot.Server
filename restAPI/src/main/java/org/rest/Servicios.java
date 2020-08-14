@@ -94,4 +94,19 @@ public class Servicios extends Application {
         }
         return response;
     }
+
+    @GET
+    @Path("obtener_compras_usuario/{id_usuario}")
+    @Produces("application/json")
+    public Response obtener_compras_usuario(@PathParam("id_usuario") String id_usuario){
+        Response response;
+        try{
+            String tiquetes_comprados = Controlador.get_instance().obtener_compras_usuario(Integer.parseInt(id_usuario));
+            response = Response.ok(tiquetes_comprados).build();
+        }
+        catch (Exception e){
+            response = Response.serverError().build();
+        }
+        return response;
+    }
 }
