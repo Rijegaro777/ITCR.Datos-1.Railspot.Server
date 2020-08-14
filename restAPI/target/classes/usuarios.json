@@ -4,14 +4,19 @@
     "pswrd": "81dc9bdb52d04dc20036dbd8313ed055",
     "tiquetes": [
       1,
-      2
+      2,
+      5,
+      6
     ]
   },
   {
     "cedula": 208170157,
     "pswrd": "9450476b384b32d8ad8b758e76c98a69",
     "tiquetes": [
-      0
+      0,
+      3,
+      4,
+      7
     ]
   }
 ]

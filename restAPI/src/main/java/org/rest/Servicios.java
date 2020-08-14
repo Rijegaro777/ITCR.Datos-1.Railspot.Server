@@ -109,4 +109,21 @@ public class Servicios extends Application {
         }
         return response;
     }
+
+    @GET
+    @Path("obtener_tiquetes_comprados_por_fecha/{fecha}")
+    @Produces("application/json")
+    public Response obtener_tiquetes_comprados_por_fecha(@PathParam("fecha") String fecha){
+        Response response;
+        try{
+            String[] fecha_por_partes = fecha.split("&");
+            String fecha_reformateada = fecha_por_partes[0] + "/" + fecha_por_partes[1] + "/" + fecha_por_partes[2];
+            String tiquetes_por_fecha = Controlador.get_instance().obtener_tiquetes_comprados_por_fecha(fecha_reformateada);
+            response = Response.ok(tiquetes_por_fecha).build();
+        }
+        catch (Exception e){
+            response = Response.serverError().build();
+        }
+        return response;
+    }
 }

@@ -1,5 +1,6 @@
 package org.rest;
 
+import AlgoritmosOrdenamiento.Sorting;
 import EstructurasDatos.AristaGrafo;
 import EstructurasDatos.BST;
 import EstructurasDatos.Grafo;
@@ -333,7 +334,7 @@ public class Controlador {
     public String calcular_costo(int partida, int destino) {
         rutas.calculateShortestDistances(partida);
         int distancia = rutas.getNodes()[destino].getDistanceFromSource();
-        int precio = distancia * 25;
+        int precio = (distancia - partida) * 25;
         String result = String.valueOf(distancia - partida) + "%" + String.valueOf(precio);
         return result;
     }
@@ -342,6 +343,24 @@ public class Controlador {
         List<Integer> tiquetes_comprados_usuario = arbol_usuarios.get_nodo(id_usuario).get_valor().get_tiquetes();
         String tiquetes_comprados_json = gson.toJson(tiquetes_comprados_usuario);
         return tiquetes_comprados_json;
+    }
+
+    public String obtener_tiquetes_comprados_por_fecha(String fecha) throws IOException {
+        List<Tiquete> lista_tiquetes = get_lista_tiquetes_json_tiquetes();
+        List<Tiquete> lista_tiquetes_que_coinciden = new ArrayList<>();
+        String tiquetes_en_fecha_json;
+        for(Tiquete tiquete : lista_tiquetes){
+            if(tiquete.get_fecha().equals(fecha)){
+                lista_tiquetes_que_coinciden.add(tiquete);
+            }
+        }
+        if (lista_tiquetes_que_coinciden.isEmpty()){
+            tiquetes_en_fecha_json = "No se encontraron coincidencias";
+        }
+        else{
+            tiquetes_en_fecha_json = gson.toJson(lista_tiquetes_que_coinciden);
+        }
+        return  tiquetes_en_fecha_json;
     }
 }
 
