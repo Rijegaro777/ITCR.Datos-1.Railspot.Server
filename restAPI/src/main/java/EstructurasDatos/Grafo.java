@@ -8,15 +8,19 @@ public class Grafo {
     private AristaGrafo[] edges;
     private int noOfEdges;
 
+    /**
+     * Grafo 
+     * @aristas Parametro de una lista con las aristas que van a ser conectadas con los nodos
+     */
     public Grafo(AristaGrafo[] aristas) {
         this.edges = aristas;
-        // create all nodes ready to be updated with the edges
+        // crea los nodos para que se asignen con su arista respectiva
         this.noOfNodes = calculateNoOfNodes(aristas);
         this.nodes = new NodoGrafo[this.noOfNodes];
         for (int n = 0; n < this.noOfNodes; n++) {
             this.nodes[n] = new NodoGrafo();
         }
-        // add all the edges to the nodes, each edge added to two nodes (to and from)
+        //Agrega las aristas a los nodos, cada arista tiene dos nodos (salida y destino) 
         this.noOfEdges = aristas.length;
         for (int edgeToAdd = 0; edgeToAdd < this.noOfEdges; edgeToAdd++) {
             this.nodes[aristas[edgeToAdd].getFromNodeIndex()].getEdges().add(aristas[edgeToAdd]);
@@ -24,6 +28,11 @@ public class Grafo {
         }
     }
 
+    /**
+     * 
+     * @param aristas es la lista de las aristas disponibles
+     * @return Retorna el numero de nodos
+     */
     private int calculateNoOfNodes(AristaGrafo[] aristas) {
         int noOfNodes = 0;
         for (AristaGrafo e : aristas) {
@@ -35,10 +44,18 @@ public class Grafo {
         noOfNodes++;
         return noOfNodes;
     }
-
+    
+    
+    /**
+     * 
+     * @param source es el nodo de salida
+     */
     public void calculateShortestDistances(int source) {
+    	//Asigna el nodo de salida.
         this.nodes[source].setDistanceFromSource(source);
         int nextNode = source;
+        
+        //Visita cada nodo y revisa las aristas del nodo actual
         for (int i = 0; i < this.nodes.length; i++) {
             ArrayList<AristaGrafo> currentNodeEdges = this.nodes[nextNode].getEdges();
             for (int joinedEdge = 0; joinedEdge < currentNodeEdges.size(); joinedEdge++) {
@@ -50,11 +67,16 @@ public class Grafo {
                     }
                 }
             }
+            //Define si el nodo ya fue visitado no
             nodes[nextNode].setVisited(true);
             nextNode = getNodeShortestDistanced();
         }
     }
 
+    /**
+     * 
+     * @return el indice del nodo con la distancia mas corta
+     */
     private int getNodeShortestDistanced() {
         int storedNodeIndex = 0;
         int storedDist = Integer.MAX_VALUE;
@@ -68,6 +90,7 @@ public class Grafo {
         return storedNodeIndex;
     }
 
+    
     public void printResult(int source) {
         String output = "Numero de nodos = " + this.noOfNodes;
         output += "\nNumero de Aristas = " + this.noOfEdges;

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class NodoGrafo {
 	  private int distanceFromSource = Integer.MAX_VALUE;
 	  private boolean visited;
-	  private ArrayList<AristaGrafo> edges = new ArrayList<AristaGrafo>(); // now we must create edges
+	  private ArrayList<AristaGrafo> edges = new ArrayList<AristaGrafo>(); 
 	  public int getDistanceFromSource() {
 	    return distanceFromSource;
 	  }
