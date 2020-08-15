@@ -95,6 +95,63 @@ public class Servicios extends Application {
         return response;
     }
 
+    /**
+     * Recibe una solicitud para agregar una estación al JSON.
+     * @param estacion El JSON de la estación a agregar.
+     * @return Una respuesta "OK" si el resultado es satisfactorio y un error si falla.
+     */
+    @POST
+    @Path("agregar_estacion")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response agregar_estacion(String estacion){
+        Response response;
+        try{
+            Controlador.get_instance().agregar_estacion(estacion);
+            response = Response.ok().build();
+        }
+        catch (Exception e){
+            response = Response.serverError().build();
+        }
+        return response;
+    }
+
+    /**
+     * Recibe una solicitud para agregar una nueva arista al grafo.
+     * @param arista El JSON del tiquete a comprar.
+     * @return Una respuesta "OK" si el resultado es satisfactorio y un error si falla.
+     */
+    @POST
+    @Path("agregar_ruta")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response agregar_ruta(String arista){
+        Response response;
+        try{
+            Controlador.get_instance().agregar_ruta(arista);
+            response = Response.ok().build();
+        }
+        catch (Exception e){
+            response = Response.serverError().build();
+        }
+        return response;
+    }
+
+    @GET
+    @Path("obtener_estaciones")
+    @Produces("application/json")
+    public Response obtener_estaciones(){
+        Response response;
+        try{
+            String lista_estaciones = Controlador.get_instance().obtener_estaciones();
+            response = Response.ok(lista_estaciones).build();
+        }
+        catch (Exception e){
+            response = Response.serverError().build();
+        }
+        return response;
+    }
+
     @GET
     @Path("obtener_compras_usuario/{id_usuario}")
     @Produces("application/json")

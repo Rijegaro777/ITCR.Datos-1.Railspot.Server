@@ -1,10 +1,8 @@
 package org.rest;
 
-import AlgoritmosOrdenamiento.Sorting;
 import EstructurasDatos.AristaGrafo;
 import EstructurasDatos.BST;
 import EstructurasDatos.Grafo;
-import EstructurasDatos.NodoGrafo;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -15,12 +13,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class Controlador {
-    private int san_jose, san_pedro, zapote, sabanilla, curridabat,
-            tres_rios, cartago, paraiso, guadalupe, moravia, tibas,
-            santo_domingo, heredia, usuario_actual;
-    private String json_usuarios, json_tiquetes;
+    private int usuario_actual;
+    private String json_usuarios, json_tiquetes, json_rutas, json_estaciones;
     private Gson gson;
-    private ArrayList<AristaGrafo> aristas;
+    private List<AristaGrafo> aristas;
     private BST<Usuario> arbol_usuarios;
     private BST<Tiquete> arbol_tiquetes;
     private Grafo rutas;
@@ -36,11 +32,14 @@ public class Controlador {
 
         this.json_usuarios = "src/main/resources/usuarios.json";
         this.json_tiquetes = "src/main/resources/tiquetes.json";
+        this.json_rutas = "src/main/resources/rutas.json";
+        this.json_estaciones = "src/main/resources/estaciones.json";
 
         try {
             cargar_usuarios();
             cargar_tiquetes();
-            cargar_rutas();
+            this.aristas = get_lista_rutas_json_rutas();
+            this.rutas = new Grafo(aristas.toArray(new AristaGrafo[0]));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -48,7 +47,6 @@ public class Controlador {
 
     /**
      * Crea y devuelve una instancia única de Controlador.
-     *
      * @return Una instancia de Controlador.
      */
     public static Controlador get_instance() {
@@ -60,7 +58,6 @@ public class Controlador {
 
     /**
      * Agrega un usuario nuevo al JSON de usuarios.
-     *
      * @param usuario Un string con el JSON del usuario.
      * @throws Exception
      */
@@ -89,7 +86,6 @@ public class Controlador {
 
     /**
      * Agrega un tiquete al JSON de tiquetes.
-     *
      * @param tiquete Un string con el JSON del tiquete.
      * @throws Exception
      */
@@ -109,8 +105,71 @@ public class Controlador {
     }
 
     /**
+     * Calcula el costo en dinero y distancia de un viaje.
+     * @param partida El índice del nodo de partida.
+     * @param destino El índice del nodo de llegada.
+     * @return Un string compuesto por la distancia más corta entre los puntos de
+     * llegada y partida y el precio del viaje, separados por un "%".
+     */
+    public String calcular_costo(int partida, int destino) {
+        rutas.calculateShortestDistances(partida);
+        int distancia = rutas.getNodes()[destino].getDistanceFromSource();
+        int precio = (distancia - partida) * 25;
+        String result = String.valueOf(distancia - partida) + "%" + String.valueOf(precio);
+        return result;
+    }
+
+    /**
+     * Agrega una arista nueva al grafo.
+     * @param ruta Un string en formato JSON que contiene la nueva arista que se agregará al grafo.
+     * @throws Exception
+     */
+    public void agregar_ruta(String ruta) throws Exception {
+        AristaGrafo arista_nueva = gson.fromJson(ruta, AristaGrafo.class);
+        int partida = arista_nueva.getFromNodeIndex();
+        int destino = arista_nueva.getToNodeIndex();
+        int distancia = arista_nueva.getLength();
+        aristas.add(new AristaGrafo(partida, destino, distancia));
+        rutas = new Grafo(aristas.toArray(new AristaGrafo[0]));
+        actualizar_rutas_json_rutas();
+    }
+
+    /**
+     * Busca todos los tiquetes comprados por un usuarios específico.
+     * @param id_usuario El id del usuario cuyas compras se desea conocer.
+     * @return Un string con el JSON de la lista de tiquetes comprados por usuario.
+     */
+    public String obtener_compras_usuario(int id_usuario) {
+        List<Integer> tiquetes_comprados_usuario = arbol_usuarios.get_nodo(id_usuario).get_valor().get_tiquetes();
+        String tiquetes_comprados_json = gson.toJson(tiquetes_comprados_usuario);
+        return tiquetes_comprados_json;
+    }
+
+    /**
+     * Busca todos los tiquetes comprados en una fecha específica.
+     * @param fecha La fecha que se desea consultar.
+     * @return Un string con el JSON de la lista de tiquetes comprados para la fecha especificada.
+     */
+    public String obtener_tiquetes_comprados_por_fecha(String fecha) throws IOException {
+        List<Tiquete> lista_tiquetes = get_lista_tiquetes_json_tiquetes();
+        List<Tiquete> lista_tiquetes_que_coinciden = new ArrayList<>();
+        String tiquetes_en_fecha_json;
+        for(Tiquete tiquete : lista_tiquetes){
+            if(tiquete.get_fecha().equals(fecha)){
+                lista_tiquetes_que_coinciden.add(tiquete);
+            }
+        }
+        if (lista_tiquetes_que_coinciden.isEmpty()){
+            tiquetes_en_fecha_json = "No se encontraron coincidencias";
+        }
+        else{
+            tiquetes_en_fecha_json = gson.toJson(lista_tiquetes_que_coinciden);
+        }
+        return  tiquetes_en_fecha_json;
+    }
+
+    /**
      * Lee el archivo JSON de los usuarios.
-     *
      * @return Una lista con todos los usuarios del JSON.
      */
     private List<Usuario> get_lista_usuarios_json_usuarios() throws IOException {
@@ -137,8 +196,7 @@ public class Controlador {
     }
 
     /**
-     * Lee el archivo JSON de los tiquete.
-     *
+     * Lee el archivo JSON de los tiquetes.
      * @return Una lista con todos los tiquetes del JSON.
      */
     private List<Tiquete> get_lista_tiquetes_json_tiquetes() throws IOException {
@@ -165,8 +223,61 @@ public class Controlador {
     }
 
     /**
+     * Lee el archivo JSON de los tiquetes.
+     * @return Una lista con todos los tiquetes del JSON.
+     */
+    private List<Estacion> get_lista_estaciones_json_estaciones() throws IOException {
+        FileReader file_reader = new FileReader(json_estaciones);
+        BufferedReader buffered_reader = new BufferedReader(file_reader);
+        JsonReader json_reader = new JsonReader(buffered_reader);
+
+        List<Estacion> result = new ArrayList<>();
+
+        try {
+            Estacion[] lista_json;
+
+            lista_json = gson.fromJson(json_reader, Estacion[].class);
+
+            Collections.addAll(result, lista_json);
+        } catch (Exception e) {
+            return new ArrayList<>();
+        } finally {
+            json_reader.close();
+            buffered_reader.close();
+            file_reader.close();
+        }
+        return result;
+    }
+
+    /**
+     * Lee el archivo JSON de las rutas.
+     * @return Una lista con todas las aristas del JSON.
+     */
+    private List<AristaGrafo> get_lista_rutas_json_rutas() throws IOException {
+        FileReader file_reader = new FileReader(json_rutas);
+        BufferedReader buffered_reader = new BufferedReader(file_reader);
+        JsonReader json_reader = new JsonReader(buffered_reader);
+
+        List<AristaGrafo> result = new ArrayList<>();
+
+        try {
+            AristaGrafo[] lista_json;
+
+            lista_json = gson.fromJson(json_reader, AristaGrafo[].class);
+
+            Collections.addAll(result, lista_json);
+        } catch (Exception e) {
+            return new ArrayList<>();
+        } finally {
+            json_reader.close();
+            buffered_reader.close();
+            file_reader.close();
+        }
+        return result;
+    }
+
+    /**
      * Agrega un Usuario al JSON.
-     *
      * @param usuario El usuario a agregar.
      */
     private void agregar_usuario_json_usuarios(Usuario usuario) throws Exception {
@@ -188,7 +299,6 @@ public class Controlador {
 
     /**
      * Agrega un tiquete al JSON.
-     *
      * @param tiquete El usuario a agregar.
      */
     private void agregar_tiquete_json_tiquetes(Tiquete tiquete) throws Exception {
@@ -209,8 +319,28 @@ public class Controlador {
     }
 
     /**
+     * Agrega una estación al JSON.
+     * @param estacion El usuario a agregar.
+     */
+    private void agregar_estacion_json_estaciones(Estacion estacion) throws Exception {
+        List<Estacion> contenido = get_lista_estaciones_json_estaciones();
+
+        FileWriter fileWriter = new FileWriter(json_estaciones);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+        try {
+            contenido.add(estacion);
+            bufferedWriter.write(gson.toJson(contenido));
+        } catch (Exception e) {
+            throw new Exception("Error");
+        } finally {
+            bufferedWriter.close();
+            fileWriter.close();
+        }
+    }
+
+    /**
      * Sobreescribe los datos que ya existen en el JSON de usuarios.
-     *
      * @throws Exception
      */
     private void actualizar_usuarios_json_usuarios() throws Exception {
@@ -221,6 +351,23 @@ public class Controlador {
 
         try {
             bufferedWriter.write(gson.toJson(contenido));
+        } catch (Exception e) {
+            throw new Exception("Error");
+        } finally {
+            bufferedWriter.close();
+            fileWriter.close();
+        }
+    }
+
+    /**
+     * Sobreescribe los datos que ya existen en el JSON de rutas.
+     * @throws Exception
+     */
+    public void actualizar_rutas_json_rutas() throws Exception {
+        FileWriter fileWriter = new FileWriter(json_rutas);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+        try {
+            bufferedWriter.write(gson.toJson(aristas));
         } catch (Exception e) {
             throw new Exception("Error");
         } finally {
@@ -252,70 +399,7 @@ public class Controlador {
     }
 
     /**
-     * Crea el grafo con todas las rutas.
-     */
-    private void cargar_rutas() {
-        this.san_jose = 0;
-        this.san_pedro = 1;
-        this.zapote = 2;
-        this.sabanilla = 3;
-        this.curridabat = 4;
-        this.tres_rios = 5;
-        this.cartago = 6;
-        this.paraiso = 7;
-        this.guadalupe = 8;
-        this.moravia = 9;
-        this.tibas = 10;
-        this.santo_domingo = 11;
-        this.heredia = 12;
-
-        this.aristas = new ArrayList<>();
-
-        //San José
-        aristas.add(new AristaGrafo(san_jose, san_pedro, 5));
-        aristas.add(new AristaGrafo(san_jose, zapote, 7));
-        aristas.add(new AristaGrafo(san_jose, sabanilla, 8));
-        aristas.add(new AristaGrafo(san_jose, tibas, 5));
-
-        //San Pedro
-        aristas.add(new AristaGrafo(san_pedro, guadalupe, 4));
-        aristas.add(new AristaGrafo(san_pedro, sabanilla, 5));
-        aristas.add(new AristaGrafo(san_pedro, curridabat, 3));
-
-        //Zapote
-        aristas.add(new AristaGrafo(zapote, tres_rios, 3));
-
-        //Sabanilla
-        aristas.add(new AristaGrafo(sabanilla, tres_rios, 8));
-        aristas.add(new AristaGrafo(sabanilla, guadalupe, 4));
-
-        //Curridabat
-        aristas.add(new AristaGrafo(curridabat, tres_rios, 7));
-
-        //Tres Ríos
-        aristas.add(new AristaGrafo(tres_rios, cartago, 13));
-
-        //Cartago
-        aristas.add(new AristaGrafo(cartago, paraiso, 7));
-
-        //Guadalupe
-        aristas.add(new AristaGrafo(guadalupe, moravia, 10));
-
-        //Moravia
-        aristas.add(new AristaGrafo(moravia, tibas, 12));
-
-        //Tibas
-        aristas.add(new AristaGrafo(tibas, santo_domingo, 3));
-
-        //Santo Domingo
-        aristas.add(new AristaGrafo(santo_domingo, heredia, 5));
-
-        this.rutas = new Grafo(aristas.toArray(new AristaGrafo[0]));
-    }
-
-    /**
      * Encripta un string usando el algoritmo hashMD5
-     *
      * @param string El string a encriptar.
      * @return Un string con el string encriptado.
      */
@@ -323,44 +407,15 @@ public class Controlador {
         return DigestUtils.md5Hex(string);
     }
 
-    /**
-     * Calcula el costo en dinero y distancia de un viaje.
-     *
-     * @param partida El índice del nodo de partida.
-     * @param destino El índice del nodo de llegada.
-     * @return Un string compuesto por la distancia más corta entre los puntos de
-     * llegada y partida y el precio del viaje, separados por un "%".
-     */
-    public String calcular_costo(int partida, int destino) {
-        rutas.calculateShortestDistances(partida);
-        int distancia = rutas.getNodes()[destino].getDistanceFromSource();
-        int precio = (distancia - partida) * 25;
-        String result = String.valueOf(distancia - partida) + "%" + String.valueOf(precio);
-        return result;
+    public String obtener_estaciones() throws IOException {
+        List<Estacion> lista_estaciones = get_lista_estaciones_json_estaciones();
+        String lista_estaciones_json = gson.toJson(lista_estaciones);
+        return lista_estaciones_json;
     }
 
-    public String obtener_compras_usuario(int id_usuario) {
-        List<Integer> tiquetes_comprados_usuario = arbol_usuarios.get_nodo(id_usuario).get_valor().get_tiquetes();
-        String tiquetes_comprados_json = gson.toJson(tiquetes_comprados_usuario);
-        return tiquetes_comprados_json;
-    }
-
-    public String obtener_tiquetes_comprados_por_fecha(String fecha) throws IOException {
-        List<Tiquete> lista_tiquetes = get_lista_tiquetes_json_tiquetes();
-        List<Tiquete> lista_tiquetes_que_coinciden = new ArrayList<>();
-        String tiquetes_en_fecha_json;
-        for(Tiquete tiquete : lista_tiquetes){
-            if(tiquete.get_fecha().equals(fecha)){
-                lista_tiquetes_que_coinciden.add(tiquete);
-            }
-        }
-        if (lista_tiquetes_que_coinciden.isEmpty()){
-            tiquetes_en_fecha_json = "No se encontraron coincidencias";
-        }
-        else{
-            tiquetes_en_fecha_json = gson.toJson(lista_tiquetes_que_coinciden);
-        }
-        return  tiquetes_en_fecha_json;
+    public void agregar_estacion(String estacion) throws Exception {
+        Estacion estacion_nueva = gson.fromJson(estacion, Estacion.class);
+        agregar_estacion_json_estaciones(estacion_nueva);
     }
 }
 

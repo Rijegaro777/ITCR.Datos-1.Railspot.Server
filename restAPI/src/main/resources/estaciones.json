@@ -1,0 +1,54 @@
+[
+  {
+    "title": "San José",
+    "id": 0
+  },
+  {
+    "title": "San Pedro",
+    "id": 1
+  },
+  {
+    "title": "Zapote",
+    "id": 2
+  },
+  {
+    "title": "Sabanilla",
+    "id": 3
+  },
+  {
+    "title": "Curridabat",
+    "id": 4
+  },
+  {
+    "title": "Tres Ríos",
+    "id": 5
+  },
+  {
+    "title": "Cartago",
+    "id": 6
+  },
+  {
+    "title": "Paraíso",
+    "id": 7
+  },
+  {
+    "title": "Guadalupe",
+    "id": 8
+  },
+  {
+    "title": "Moravia",
+    "id": 9
+  },
+  {
+    "title": "Tibás",
+    "id": 10
+  },
+  {
+    "title": "Santo Domingo",
+    "id": 11
+  },
+  {
+    "title": "Heredia",
+    "id": 12
+  }
+]

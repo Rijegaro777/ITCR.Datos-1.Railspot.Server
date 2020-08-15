@@ -1,0 +1,87 @@
+[
+  {
+    "fromNodeIndex": 0,
+    "toNodeIndex": 1,
+    "length": 5
+  },
+  {
+    "fromNodeIndex": 0,
+    "toNodeIndex": 2,
+    "length": 7
+  },
+  {
+    "fromNodeIndex": 0,
+    "toNodeIndex": 3,
+    "length": 8
+  },
+  {
+    "fromNodeIndex": 0,
+    "toNodeIndex": 10,
+    "length": 5
+  },
+  {
+    "fromNodeIndex": 1,
+    "toNodeIndex": 8,
+    "length": 4
+  },
+  {
+    "fromNodeIndex": 1,
+    "toNodeIndex": 3,
+    "length": 5
+  },
+  {
+    "fromNodeIndex": 1,
+    "toNodeIndex": 4,
+    "length": 3
+  },
+  {
+    "fromNodeIndex": 2,
+    "toNodeIndex": 5,
+    "length": 3
+  },
+  {
+    "fromNodeIndex": 3,
+    "toNodeIndex": 5,
+    "length": 8
+  },
+  {
+    "fromNodeIndex": 3,
+    "toNodeIndex": 8,
+    "length": 4
+  },
+  {
+    "fromNodeIndex": 4,
+    "toNodeIndex": 5,
+    "length": 7
+  },
+  {
+    "fromNodeIndex": 5,
+    "toNodeIndex": 6,
+    "length": 13
+  },
+  {
+    "fromNodeIndex": 6,
+    "toNodeIndex": 7,
+    "length": 7
+  },
+  {
+    "fromNodeIndex": 8,
+    "toNodeIndex": 9,
+    "length": 10
+  },
+  {
+    "fromNodeIndex": 9,
+    "toNodeIndex": 10,
+    "length": 12
+  },
+  {
+    "fromNodeIndex": 10,
+    "toNodeIndex": 11,
+    "length": 3
+  },
+  {
+    "fromNodeIndex": 11,
+    "toNodeIndex": 12,
+    "length": 5
+  }
+]
