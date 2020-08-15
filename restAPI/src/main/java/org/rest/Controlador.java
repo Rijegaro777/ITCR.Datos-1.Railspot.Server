@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Controlador {
-    private int usuario_actual;
+    public int usuario_actual;
     private String json_usuarios, json_tiquetes, json_rutas, json_estaciones;
     private Gson gson;
     private List<AristaGrafo> aristas;
@@ -150,7 +150,12 @@ public class Controlador {
      */
     public String obtener_compras_usuario(int id_usuario) {
         List<Integer> tiquetes_comprados_usuario = arbol_usuarios.get_nodo(id_usuario).get_valor().get_tiquetes();
-        String tiquetes_comprados_json = gson.toJson(tiquetes_comprados_usuario);
+        List<Tiquete> tiquetes_clase = new ArrayList<>();
+        for(int i:tiquetes_comprados_usuario){
+            Tiquete tiquete = arbol_tiquetes.get_nodo(i).get_valor();
+            tiquetes_clase.add(tiquete);
+        }
+        String tiquetes_comprados_json = gson.toJson(tiquetes_clase);
         return tiquetes_comprados_json;
     }
 

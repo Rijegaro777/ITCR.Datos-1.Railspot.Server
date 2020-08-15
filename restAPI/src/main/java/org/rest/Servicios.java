@@ -150,12 +150,12 @@ public class Servicios extends Application {
     }
 
     @GET
-    @Path("obtener_compras_usuario/{id_usuario}")
+    @Path("obtener_compras_usuario/")
     @Produces("application/json")
-    public Response obtener_compras_usuario(@PathParam("id_usuario") String id_usuario){
+    public Response obtener_compras_usuario(){
         Response response;
         try{
-            String tiquetes_comprados = Controlador.get_instance().obtener_compras_usuario(Integer.parseInt(id_usuario));
+            String tiquetes_comprados = Controlador.get_instance().obtener_compras_usuario(Controlador.get_instance().usuario_actual);
             response = Response.ok(tiquetes_comprados).build();
         }
         catch (Exception e){
