@@ -51,21 +51,18 @@ public class Servicios extends Application {
     }
 
     /**
-     * Recibe una solicitud para calcular el costo en distancia y dinero entre dos puntos.
-     * @param partida_destino Un string compuesto por el índice del nodo de partida y
-     *                        el nodo destino, separados por un "%".
-     * @return Un string compuesto por la distancia más corta entre los puntos de
-     *         llegada y partida y el precio del viaje, separados por un "%".
+     * Recibe una solicitud para calcular el costo en distancia y dinero entre una parada y todas las demás.
+     * @param partida El índice del nodo de partida.
+     * @return Un string con el JSON del costo en dinero y distancia del viaje.
      */
     @GET
-    @Path("calcular_costo/{partida_destino}")
-    @Produces("text/plain")
-    public Response calcular_costo(@PathParam("partida_destino") String partida_destino){
+    @Path("calcular_costo/{partida}")
+    @Produces("application/json")
+    public Response calcular_costo(@PathParam("partida") String partida){
         Response response;
         try{
-            int partida = Integer.parseInt(partida_destino.split("%")[0]);
-            int destino = Integer.parseInt(partida_destino.split("%")[1]);
-            String costo = Controlador.get_instance().calcular_costo(partida, destino);
+            int partida_int = Integer.parseInt(partida);
+            String costo = Controlador.get_instance().calcular_costo(partida_int);
             response = Response.ok(costo).build();
         }
         catch (Exception e){

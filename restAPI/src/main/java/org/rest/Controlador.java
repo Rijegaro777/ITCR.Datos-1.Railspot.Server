@@ -3,6 +3,7 @@ package org.rest;
 import EstructurasDatos.AristaGrafo;
 import EstructurasDatos.BST;
 import EstructurasDatos.Grafo;
+import EstructurasDatos.NodoGrafo;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -105,17 +106,25 @@ public class Controlador {
     }
 
     /**
-     * Calcula el costo en dinero y distancia de un viaje.
+     * Calcula el costo en dinero y distancia entre un punto de partida y todas las estaciones.
      * @param partida El índice del nodo de partida.
-     * @param destino El índice del nodo de llegada.
-     * @return Un string compuesto por la distancia más corta entre los puntos de
-     * llegada y partida y el precio del viaje, separados por un "%".
+     * @return Un string con el JSON de todos los costos.
      */
-    public String calcular_costo(int partida, int destino) {
+    public String calcular_costo(int partida) throws IOException {
         rutas.calculateShortestDistances(partida);
-        int distancia = rutas.getNodes()[destino].getDistanceFromSource();
-        int precio = (distancia - partida) * 25;
-        String result = String.valueOf(distancia - partida) + "%" + String.valueOf(precio);
+        NodoGrafo[] nodos = rutas.getNodes();
+        List<Costo> costos = new ArrayList<>();
+        List<Estacion> estaciones = get_lista_estaciones_json_estaciones();
+        for(int i = 0; i < nodos.length; i++){
+            if(i != partida){
+                int distancia = nodos[i].getDistanceFromSource() - partida;
+                int precio = distancia * 25;
+                Costo costo = new Costo(estaciones.get(i).get_title(), i, precio, distancia);
+                costos.add(costo);
+            }
+        }
+        String result = gson.toJson(costos);
+        rutas = new Grafo(aristas.toArray(new AristaGrafo[0]));
         return result;
     }
 
