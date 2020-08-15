@@ -21,7 +21,9 @@ public class AristaGrafo {
 	  public int getLength() {
 	    return length;
 	  }
-
+	  /*
+	   * Indica el nodo vecino del nodo de entrada.
+	   */
 	  public int getNeighbourIndex(int nodeIndex) {
 	    if (this.fromNodeIndex == nodeIndex) {
 	      return this.toNodeIndex;
